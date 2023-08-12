@@ -411,6 +411,90 @@
             transform: scale(1.05);
         }
 
+              /* Media query for smaller screens */
+        @media (max-width: 768px) {
+            .panel-container {
+                width: 100%;
+                max-width: 50%; /* Adjust the maximum width as needed */
+                padding: 3px; /* Adjust the padding as needed */
+            }
+
+            /* Adjust other styles for smaller screens */
+        }
+
+        /* Media query for even smaller screens */
+        @media (max-width: 480px) {
+            .panel-container.left-panel {
+                max-width: 30%;
+                padding-top: 18px;
+                font-size: 16px; /* Adjust the font size for the left panel */
+            }
+
+            .panel-container.left-panel .skill-section {
+                max-height: 800px; /* Increase the maximum height as needed */
+                overflow-y: auto; /* Add vertical scrollbar if content exceeds max height */
+                padding-left: 2px;
+            }
+
+            .panel-container.right-panel {
+                max-width: 30%;
+                text-align: center;
+                font-size: 16px;
+                padding-top: 20px;
+                
+            }
+
+            
+            .sound-toggle {
+                left: 10px;
+                max-width: 20%;
+            }
+
+            .panel-container.right-panel h2 {
+            
+                padding-top: 15px;
+            }
+
+            .header-l {
+            position: fixed;
+            top: 25%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%; /* Header width adjusts with the window size */
+            max-width: calc(100% - 40px); /* Limit the maximum width to account for the margin */
+            z-index: 1;
+            
+        
+            font-size: 24px; /* Adjust the font size as needed */
+            padding: 5px 0; /* Adjust padding as needed */
+            margin: 0; /* Reset margin to ensure accurate centering */
+        }
+        .header-l img {
+            width: 200px; /* Adjust the width as needed */
+            height: 75px; /* Adjust the height as needed */
+        }
+
+        .header-r {
+            position: fixed;
+            top: 95%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%; /* Header width adjusts with the window size */
+            max-width: calc(100% - 40px); /* Limit the maximum width to account for the margin */
+            z-index: 1;
+            
+        
+            font-size: 24px; /* Adjust the font size as needed */
+            padding: 5px 0; /* Adjust padding as needed */
+            margin: 0; /* Reset margin to ensure accurate centering */
+        }
+        .header-r img {
+            width: 200px; /* Adjust the width as needed */
+            height: 75px; /* Adjust the height as needed */
+        }
+
+        }
+
     </style>
     
     <script type="module">
@@ -1076,7 +1160,7 @@
             <button class="close-button">X</button>
             <h3>Say Hello!</h3>
             <p><a href="mailto:sarahbkr6.9.94@gmail.com">sarahbkr6.9.94@gmail.com</a></p>
-            <p><a href="www.linkedin.com/in/sarah-baker-840a018a">LinkedIn</a></p>
+            <p><a href="https://www.linkedin.com/in/sarah-baker-840a018a">LinkedIn</a></p>
             <p><a href="https://discord.com/users/rachelletheroach">Discord</a></p>
             <p><a href="https://twitter.com/RachelletheR">X(Twitter)</a></p>
             <p><a href="https://www.youtube.com/channel/UCNLtN-P7gOQ1i7CQa1W9LOw">Youtube</a></p>
