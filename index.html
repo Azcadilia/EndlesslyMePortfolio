@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.2.3/howler.core.min.js"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&display=swap">
+    <link rel="icon" href="favicon_io/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/simplebar/5.3.0/simplebar.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/simplebar/5.3.0/simplebar.min.js"></script>
+
+    <title>3D Cube Game Portfolio Page</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            position: relative;
+            font-family: 'Racing Sans One', sans-serif;
+        }
+
+        #game-container {
+            flex: 1;
+        }
+
+        
+
+        #scoreElement {
+            text-align: center;
+            font-size: 24px; /* Adjust the font size as needed */
+            
+        }
+        /* Loader styles */
+        .loader-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 9999;
+        }
+
+        .loader {
+            border: 4px solid rgb(208, 191, 223);
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .mouse-popup {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.7);
+            color: rgb(208, 191, 223);
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 12px;
+            cursor: pointer; /* Add cursor pointer for indicating interactivity */
+            pointer-events: auto; /* Allow the popup to receive mouse events */
+            user-select: none; /* Prevent text selection in the popup */
+            display: block; /* Show the popup initially */
+        }
+
+        
+
+        /* Add margin or padding to the h2 headings */
+        h2 {
+            margin-top: 80px; /* Adjust the value as needed */
+        }
+
+        .popup {
+            display: none;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 2;
+            color: rgb(208, 191, 223);
+        }
+
+        .popup-content {
+            background-color: rgba(76, 36, 151, 0.959);
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto;
+            text-align: center; /* Center the text horizontally */
+        }
+
+        .popup-content h3,
+        .popup-content p {
+            margin: 10px 0; /* Add some spacing between elements */
+        }
+
+        .popup-content a {
+            color: #0e0c22; /* Change this to the desired color */
+            text-decoration: underline; /* Add underline to the link */
+        }
+
+        .popup-content a:hover {
+            color: #248ba2; /* Change this to the desired color for the hover effect */
+        }
+
+        .popup-content .scroll-panel {
+            max-height: 300px; /* Set a maximum height for the scroll-panel */
+            overflow-y: auto; /* Add vertical scrollbar if content exceeds max height */
+            scrollbar-width: thin; /* For Firefox */
+            scrollbar-color: #550370e6 #160821c9; /* Set scrollbar colors */
+        }
+
+        .popup-content .scroll-panel::-webkit-scrollbar {
+            width: 10px; /* Set the width of the scrollbar */
+        }
+
+        .popup-content .scroll-panel::-webkit-scrollbar-thumb {
+            background-color: #550370e6; /* Set the color of the scrollbar thumb */
+            border-radius: 5px; /* Rounded corners for the thumb */
+        }
+
+        .popup-content .scroll-panel::-webkit-scrollbar-track {
+            background-color: #6963e9e5; /* Set the color of the scrollbar track */
+        }
+
+        .close-button {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: #000; /* Change the color as needed */
+        }
+
+        .scroll-panel {
+            max-height: 500px;
+            overflow-y: auto;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .scroll-panel img {
+            max-width: 85%;
+            max-height: 85%; /* Ensure the image doesn't exceed the width of the scroll panel */
+            margin-bottom: 10px; /* Add some spacing between images */
+        }
+
+        .video-container {
+            max-width: 100%;
+            max-height: 85%; /* Adjust the maximum height as needed */
+            margin: 10px auto; /* Center the video horizontally */
+        }
+
+        .panel-container {
+            width: 250px;
+            background-color: rgba(41, 11, 69, 0.9);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            box-sizing: border-box;
+            position: absolute;
+            z-index: 1;
+            
+        }
+
+        .panel-container.left-panel h2 {
+            font-size: 45px; /* Adjust the font size as needed */
+            margin-top: -5px;
+            margin-bottom: 1px;
+            text-align: center;
+        }
+
+        .panel-container.right-panel h2 {
+            margin-top: 20px;    /* Adjust the top margin as needed */
+            margin-bottom: 1px;  /* Adjust the bottom margin as needed */
+        }
+
+        .left-panel {
+            top: 0;
+            left: 0;
+            bottom: 0;
+        }
+
+        .right-panel {
+            top: 0;
+            right: 0;
+            bottom: 0;
+            color: rgb(208, 191, 223);
+        }
+
+        .panel {
+            margin-bottom: 20px;
+            width: 100%;
+            color: rgb(208, 191, 223);
+        }
+
+        
+
+        .skill-section {
+            /* Existing styles... */
+            max-height: 600px; /* Set a maximum height for the skill section */
+            overflow-y: auto; /* Add vertical scrollbar if content exceeds max height */
+            
+            
+        }
+
+        
+
+        /* Change the color of the scrollbar thumb when hovering */
+        ::-webkit-scrollbar-thumb:hover {
+            background-color: #2980b9 !important; /* Change this color for the hover effect */
+        }
+
+        /* Change the color of the scrollbar track when hovering */
+        ::-webkit-scrollbar-track {
+            background-color: #421662 !important; /* Change this color for the track when hovering */
+        }
+
+        .progress {
+            width: 100%;
+            height: 20px;
+            background-color: #550370e6;
+            border-radius: 5px;
+            overflow: hidden;
+            width: 85%;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background-color: #5e20ba;
+            
+        }
+
+        
+        
+
+        .score-panel {
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        background-color: rgba(0, 0, 0, 0.5);
+        color: rgb(208, 191, 223);
+        padding: 10px 10px;
+        z-index: 2;
+        }
+
+        #scoreElement {
+            text-align: center;
+        }
+
+        .sound-toggle {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+         }
+
+        .sound-toggle label {
+            display: flex;
+            align-items: center;
+        }
+
+        .sound-toggle img {
+            width: 45px;
+            height: 45px;
+            margin-right: 8px;
+        }
+
+        #soundIcon {
+            width: 45px;
+            height: 45px;
+            margin-right: 12px;
+            padding-bottom: 40px;
+        }
+
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 70px;
+            height: 10px;
+            margin-right: 30px;
+            margin-bottom: 40px;
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: relative; /* Change to relative positioning */
+            display: inline-block; /* Change to inline-block */
+            width: 40px; /* Adjust width */
+            height: 20px;
+            cursor: pointer;
+            background-color: #ccc;
+            border-radius: 20px;
+            transition: background-color 0.4s, box-shadow 0.4s;
+            vertical-align: middle; /* Align with the icon */
+            
+        }
+
+        .slider:before {
+            content: "";
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 16px;
+            height: 16px;
+            background-color: rgb(208, 191, 223);
+            border-radius: 50%;
+            transition: transform 0.4s;
+        }
+
+        input:checked + .slider {
+            background-color: #2196F3;
+            box-shadow: 0 0 1px #2196F3;
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(16px);
+        }
+
+        .header-l {
+            position: fixed;
+            top: 0;
+            left: -350px; /* Adjust the left margin as needed */
+            width: 100%; /* Header width adjusts with the window size */
+            max-width: calc(100% - 40px); /* Limit the maximum width to account for the margin */
+            z-index: 1;
+            
+            color: rgb(208, 191, 223);
+            text-align: center;
+            padding: 0px 100px;
+            
+        }
+
+
+        .header-r {
+            position: fixed;
+            top: 0;
+            right: -350px; /* Adjust the right margin as needed */
+            width: 100%; /* Header width adjusts with the window size */
+            max-width: calc(100% - 40px); /* Limit the maximum width to account for the margin */
+            z-index: 1;
+            
+            color: rgb(208, 191, 223);
+            text-align: center;
+            padding: 0px 90px;
+            
+        }
+
+
+        header {
+            
+            
+            color: rgb(208, 191, 223);
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        /* Add styles for the h1 title */
+        h1 {
+            font-size: 28px;
+            margin: 0;
+        }
+
+        .popup-button {
+            display: inline-block;
+            padding: 10px 25px;
+            margin: 5px;
+            margin-bottom: -1px;
+            font-size: 16px;
+            background-color: #550370e6;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+            font-family: 'Racing Sans One', sans-serif;
+        }
+
+        
+
+
+        .popup-button:hover {
+            background-color: #6a29b9;
+            transform: scale(1.05);
+        }
+
+    </style>
+    
+    <script type="module">
+        import * as THREE from 'https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.module.js';
+
+    const sphereColors = [
+    0xffcccc, // Red
+    0xccffcc, // Green
+    0xccccff, // Blue
+    // Add more colors here as needed
+    ];
+
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('game-container').appendChild(renderer.domElement);
+
+        const scoreElement = document.getElementById('scoreElement');
+
+        // Create a directional light
+        const directionalLight = new THREE.DirectionalLight(0x8a2be2, 1.0); // Purple hue color (0x8a2be2)
+        directionalLight.position.set(0, 0, 1); // Adjust the light position to be in front of the cube
+        scene.add(directionalLight);
+
+         // Get a reference to the mouse popup element
+        const mousePopup = document.getElementById('mousePopup');
+
+        // Function to hide the mouse popup
+        function hideMousePopup() {
+            mousePopup.style.display = 'none';
+        }
+
+        // Add event listener to hide the mouse popup when the user clicks on it
+        mousePopup.addEventListener('click', hideMousePopup);
+
+        // Add event listener to show the mouse popup when the mouse moves
+        window.addEventListener('mousemove', (event) => {
+            // Calculate the position of the popup relative to the mouse
+            const x = event.clientX + 10; // Add an offset to avoid overlapping with the cursor
+            const y = event.clientY - 20; // Add an offset to position it above the cursor
+
+            // Update the position of the popup
+            mousePopup.style.left = `${x}px`;
+            mousePopup.style.top = `${y}px`;
+        });
+
+        document.addEventListener('click', () => {
+            backgroundMusic.play();
+            hideMousePopup(); // Hide the mouse popup when the music starts playing
+        }, { once: true }); // Use the "once" option to remove the listener after the first click
+
+        const loader = document.getElementById('loader');
+
+        function showLoader() {
+            loader.style.display = 'flex';
+        }
+
+        function hideLoader() {
+            loader.style.display = 'none';
+        }
+
+
+        // Create a cube
+        const cubeGeometry = new THREE.BoxGeometry(1, 1, 1);
+        
+        // Load the texture for the cube
+        const cubeTextureLoader = new THREE.TextureLoader();
+        const cubeTexture = cubeTextureLoader.load('cube.png'); // Adjust the path
+
+        // Create a material with the texture
+        const cubeMaterial = new THREE.MeshBasicMaterial({ map: cubeTexture });
+
+        
+       
+        const cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
+        scene.add(cube);
+
+
+        // Create the first ground
+        const groundGeometry = new THREE.PlaneGeometry(10, 10);
+        const textureLoader = new THREE.TextureLoader();
+        const groundTexture = textureLoader.load('floor_L.png'); // Change this to your texture image
+        const groundMaterial = new THREE.MeshBasicMaterial({ map: groundTexture });
+
+        // Create multiple looping grounds
+        const numGrounds = 10; // Number of looping grounds
+        const groundSpacing = 10; // Spacing between grounds
+        const grounds = [];
+        for (let i = 0; i < numGrounds; i++) {
+            const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+            ground.rotation.x = -Math.PI / 2; // Rotate the ground to be flat
+            ground.position.y = -1; // Adjust the position to be just below the cube
+            ground.position.z = i * -groundSpacing - 5; // Position the ground in sequence
+            scene.add(ground);
+            grounds.push(ground);
+        }
+
+        const aspectRatio = window.innerWidth / window.innerHeight;
+
+        // Calculate the desired width and height of the background plane
+        const bgPlaneWidth = 75 * aspectRatio;
+        const bgPlaneHeight = 80 * aspectRatio;
+
+        // Create the background panel
+        const bgPanelGeometry = new THREE.PlaneGeometry(bgPlaneWidth, bgPlaneHeight);
+        const bgPanelMaterial = new THREE.MeshBasicMaterial({
+            map: new THREE.TextureLoader().load('skills.png'), // Load the texture image
+            side: THREE.DoubleSide, // Show the texture on both sides of the plane
+        });
+        const bgPanel = new THREE.Mesh(bgPanelGeometry, bgPanelMaterial);
+            bgPanel.rotation.x = -Math.PI / 2 + Math.PI / 2; // Rotate the panel 90 degrees around the X-axis
+            bgPanel.position.y = -0.51; // Slightly below the ground and cube
+            bgPanel.position.z = -20; // Push the panel farther back
+        scene.add(bgPanel);
+
+        // Adjust cube and ground positions
+        cube.position.y = 0.05; // Move the cube up
+        cube.position.x = 0;
+        cube.position.z = 5; // Move the cube closer to the camera
+
+        // Adjust ground positions
+        for (let i = 0; i < numGrounds; i++) {
+            grounds[i].position.y = -1; // Move the ground down
+            grounds[i].position.z = i * -groundSpacing - 5 - 20; // Adjust the z position
+        }
+
+        // Set up camera position and rotation
+        camera.position.set(0, 2, 10);
+        camera.rotation.x = -Math.PI / 8; // Rotate slightly downward
+
+        // Define variable for ground motion
+        let groundSpeed = 0.1; // Adjust the speed of the ground motion
+
+        // Event listener for mouse move
+        function handleMouseMove(event) {
+            const mouseX = event.clientX;
+            const windowHalfX = window.innerWidth / 2;
+            const percentX = (mouseX - windowHalfX) / windowHalfX;
+            const maxCubePositionX = 3; // Adjust the maximum position
+            cube.position.x = percentX * maxCubePositionX;
+        }
+
+        // Event listener for touch move
+        function handleTouchMove(event) {
+            const touchX = event.touches[0].clientX;
+            const windowHalfX = window.innerWidth / 2;
+            const percentX = (touchX - windowHalfX) / windowHalfX;
+            const maxCubePositionX = 3; // Adjust the maximum position
+            cube.position.x = percentX * maxCubePositionX;
+        }
+
+        window.addEventListener('mousemove', handleMouseMove);
+        window.addEventListener('touchmove', handleTouchMove, { passive: false });
+
+        const redSphereTexture = new THREE.TextureLoader().load('red.png'); // Adjust the path
+        const greenSphereTexture = new THREE.TextureLoader().load('green.png'); // Adjust the path
+        const blueSphereTexture = new THREE.TextureLoader().load('blue.png'); // Adjust the path
+        // Add more textures for other colors as needed
+
+        let sphere;
+        let sphereZ = -5;
+        const sphereThreshold = 10; // Define and initialize sphereThreshold
+        const initialSphereDirection = new THREE.Vector3(0, 0, 1); // Change this to your desired initial direction
+        let score = 0;
+        let collisionDetected = false; // Declare collisionDetected variable
+
+
+
+        // Respawn the sphere at a new random location in front of the cube
+        function respawnSphere() {
+            // Remove the existing sphere from the scene if it exists
+            if (sphere) {
+                scene.remove(sphere);
+                sphere.geometry.dispose();
+                sphere.material.dispose();
+            }
+
+            // Create a sphere
+            const sphereGeometry = new THREE.SphereGeometry(0.5, 32, 32); // Radius, Width Segments, Height Segments
+            const randomColorIndex = Math.floor(Math.random() * sphereColors.length);
+            const sphereColor = sphereColors[randomColorIndex];
+            const sphereMaterial = new THREE.MeshBasicMaterial({ color: sphereColor });
+
+            // Set the texture based on the sphere's color
+            if (sphereColor === 0xffcccc) { // Red color
+                sphereMaterial.map = redSphereTexture;
+            } else if (sphereColor === 0xccffcc) { // Green color
+                sphereMaterial.map = greenSphereTexture;
+            } else if (sphereColor === 0xccccff) { // Blue color
+                sphereMaterial.map = blueSphereTexture;
+            }
+            // Add more conditions for other colors as needed
+
+            sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+            // Set a new random position for the sphere in front of the cube
+            const randomX = Math.random() * 3 - 1.5;
+            sphere.position.set(randomX, 0.5, -5);
+
+        
+
+
+            // Update the score element
+            scoreElement.textContent = `${score}`;
+
+
+            // Add the new sphere to the scene
+            scene.add(sphere);
+        }
+
+        const scoreIncreaseSound = new Howl({
+            src: ['chime.mp3'], // Change to your audio file path
+            volume: 0.5, // Set the volume (0 to 1)
+        });
+
+
+                // Set up animation loop
+                function animate() {
+                    showLoader();
+                    requestAnimationFrame(animate);
+
+            
+            // Move the sphere towards the screen
+            sphereZ += 0.1;
+
+            // Update the sphere's position and visibility
+            if (sphere) {
+                // Move the sphere in the initial direction
+                sphere.position.addScaledVector(initialSphereDirection, 0.1); // Adjust the speed as needed
+
+                // Check if the sphere is beyond the threshold
+                if (sphere.position.z > sphereThreshold) {
+                    respawnSphere(); // Respawn a new sphere
+                }
+
+                if (sphere.visible && sphere.position.distanceTo(cube.position) < 0.75) {
+                    sphere.visible = false; // Make the sphere invisible when touched by the cube
+
+                    // Update the score based on the sphere color
+                    const sphereColor = sphere.material.color.getHex();
+                    if (sphereColor === 0xffcccc) { // Red color
+                        score -= 10; // Subtract from the score
+                        
+                    } else {
+                        score += 10; // Add to the score
+                        scoreIncreaseSound.play();
+                    }
+
+                    
+        }
+
+        updateScoreDisplay();
+            }
+
+            // Reset the collisionDetected flag after updating the sphere's visibility
+            if (!sphere || !sphere.visible) {
+                collisionDetected = false;
+            }
+            
+
+
+                    // Move all grounds backwards
+                    for (let i = 0; i < numGrounds; i++) {
+                        grounds[i].position.z += groundSpeed;
+
+                        // Reset ground position when it goes off screen
+                        if (grounds[i].position.z > groundSpacing * (numGrounds - 8.5)) {
+                            grounds[i].position.z -= 10 * numGrounds;
+                        }
+                    }
+
+                    // Render the scene
+                    renderer.render(scene, camera);
+
+                    hideLoader();
+                }
+                animate();
+                
+                // Call respawnSphere to create the initial sphere
+                respawnSphere();
+
+
+                function updateScoreDisplay() {
+            scoreElement.textContent = `${score}`;
+        }
+
+                function animateProgressBars() {
+                    const progressBars = document.querySelectorAll('.progress-bar');
+                        progressBars.forEach(bar => {
+                        const targetWidth = bar.style.width;
+                        bar.style.width = '0%';
+                        bar.style.transition = 'width 2s';
+                        setTimeout(() => {
+                        bar.style.width = targetWidth;
+                    }, 100);
+                });
+
+                
+
+            // Function to open pop-up
+        function openPopup(popupId) {
+            const popup = document.getElementById(popupId);
+            popup.style.display = 'flex';
+        }
+
+        // Function to close pop-up
+        function closePopup(popupId) {
+            const popup = document.getElementById(popupId);
+            popup.style.display = 'none';
+        }
+
+        // Add event listeners to open and close pop-ups
+        const popupButtons = document.querySelectorAll('.popup-button');
+        popupButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const popupId = button.getAttribute('data-popup');
+                openPopup(popupId);
+            });
+        });
+
+        const closeButton = document.querySelectorAll('.close-button');
+        closeButton.forEach(button => {
+            button.addEventListener('click', () => {
+                const popupId = button.closest('.popup').getAttribute('id');
+                closePopup(popupId);
+            });
+        });
+
+        }
+
+        window.addEventListener('load', () => {
+            animateProgressBars();
+            // Call any other initialization functions here
+        });
+
+
+
+        let isMusicPlaying = true; // Initial state of music (on by default)
+
+        // Update sound icon based on initial music state
+        updateSoundIcon();
+
+        // Function to update the sound icon based on the music state
+        function updateSoundIcon() {
+            const soundIcon = document.getElementById('soundIcon');
+            if (isMusicPlaying) {
+                soundIcon.src = 'unmute_icon.png';
+            } else {
+                soundIcon.src = 'mute_icon.png';
+            }
+        }
+
+        // Function to toggle music on/off
+        function toggleMusic() {
+            if (isMusicPlaying) {
+                backgroundMusic.pause();
+            } else {
+                backgroundMusic.play();
+            }
+            isMusicPlaying = !isMusicPlaying;
+
+            // Update the sound icon
+            updateSoundIcon();
+        }
+
+        // Add event listener to the button for toggling music
+        const soundToggle = document.getElementById('soundToggle');
+        soundToggle.addEventListener('click', toggleMusic);
+
+        // Initialize the background music Howl instance
+        const backgroundMusic = new Howl({
+            src: ['uppy.mp3'], // Change to your audio file path
+            loop: true, // Loop the audio
+            volume: 0.5, // Set the volume (0 to 1)
+        });
+
+        // Function to start background music after user interaction
+        function startBackgroundMusic() {
+            backgroundMusic.play();
+        }
+
+        // Add event listener to start background music after user interaction
+        document.addEventListener('click', () => {
+            startBackgroundMusic();
+            // Remove the event listener to prevent multiple plays
+            document.removeEventListener('click', startBackgroundMusic);
+        }, { once: true }); // Use the "once" option to remove the listener after the first click
+
+            // Function to handle window resize
+        function handleWindowResize() {
+            const newWidth = window.innerWidth;
+            const newHeight = window.innerHeight;
+            
+            // Update renderer size
+            renderer.setSize(newWidth, newHeight);
+
+            // Update camera aspect ratio
+            camera.aspect = newWidth / newHeight;
+            camera.updateProjectionMatrix();
+        }
+
+        // Add event listener for window resize
+        window.addEventListener('resize', handleWindowResize);
+
+        // Call handleWindowResize initially to set the initial size
+        handleWindowResize();
+
+    </script>
+</head>
+<body>
+    <div id="loader" class="loader-container">
+        <div class="loader"></div>
+    </div>
+    
+    <div class="score-panel">
+    
+    <div id="scoreElement" class="centered">0</div>
+</div>
+    </div>
+
+    <div class="header-l">
+        <header>
+            <img src="1.png" alt="1">
+        </header>
+    </div>
+    <div class="header-r">
+        <header>
+            <img src="2.png" alt="1">
+        </header>
+    </div>
+
+    <div class="panel-container left-panel">
+        <div class="panel">
+            <!-- Left Panel Content -->
+            <h2>Skills</h2>
+            <div class="skill-section" data-simplebar>
+        <div class="skill-section">
+                <h3>C#</h3>
+                <div class="progress">
+                    <div class="progress-bar" style="width: 68%;"></div>
+                </div>
+            </div>
+        <div class="skill-section">
+                <h3>Unity</h3>
+                <div class="progress">
+                    <div class="progress-bar" style="width: 55%;"></div>
+                </div>
+            </div>
+        <div class="skill-section">
+                <h3>HTML/CSS</h3>
+                <div class="progress">
+                    <div class="progress-bar" style="width: 98%;"></div>
+                </div>
+            </div>    
+        <div class="skill-section">
+            <h3>JS</h3>
+            <div class="progress">
+                <div class="progress-bar" style="width: 75%;"></div>
+            </div>
+        </div>
+        <div class="skill-section">
+            <h3>Lua</h3>
+            <div class="progress">
+                <div class="progress-bar" style="width: 65%;"></div>
+            </div>
+        </div>
+        <div class="skill-section">
+            <h3>Blender</h3>
+            <div class="progress">
+                <div class="progress-bar" style="width: 85%;"></div>
+            </div>
+        </div>
+        <div class="skill-section">
+            <h3>Graphic Design</h3>
+            <div class="progress">
+                <div class="progress-bar" style="width: 90%;"></div>
+            </div>
+        </div>
+        <div class="skill-section">
+            <h3>Game Design</h3>
+            <div class="progress">
+                <div class="progress-bar" style="width: 80%;"></div>
+            </div>
+        </div>
+        <div class="skill-section">
+            <h3>Management</h3>
+            <div class="progress">
+                <div class="progress-bar" style="width: 85%;"></div>
+            </div>
+        
+        <div class="skill-section">
+            <h3>Smart Contracts</h3>
+            <div class="progress">
+                <div class="progress-bar" style="width: 35%;"></div>
+            </div>
+        </div>
+        <div class="skill-section">
+            <h3>AI</h3>
+            <div class="progress">
+                <div class="progress-bar" style="width: 45%;"></div>
+            </div>
+        </div>
+        <div class="skill-section">
+            <h3>Unreal Engine</h3>
+            <div class="progress">
+                <div class="progress-bar" style="width: 20%;"></div>
+            </div>
+        </div>
+        </div>
+        </div>
+    </div>
+    </div>
+
+
+    <div class="panel-container right-panel">
+        <div class="panel">
+            <div class="sound-toggle">
+                <img id="soundIcon" src="unmute_icon.png" alt="Sound Icon">
+                <label class="switch">
+                    <input id="soundToggle" type="checkbox">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+        <p></p>
+        <h2>Game Jams</h2>
+        <button class="popup-button" data-popup="popup1">Anime Jam</button>
+
+        <h2>Bootcamp</h2>
+        <button class="popup-button" data-popup="popup2">Core Games</button>
+
+        <h2>3D Art</h2>
+        <button class="popup-button" data-popup="popup3">Blender</button>
+
+        <h2>2D Art</h2>
+        <button class="popup-button" data-popup="popup4">Sketches</button>
+
+        <h2>Videos</h2>
+        <button class="popup-button" data-popup="popup5">Samples</button>
+        
+        <h2>Contact Me</h2>
+        <button class="popup-button" data-popup="popup6">Links</button>
+    </div>
+
+    <!-- Pop-up screens -->
+    <div class="popup" id="popup1">
+        
+        <div class="popup-content">
+            <button class="close-button">X</button>
+            <h3>Anime Jam 2022</h3>
+            <p><a href="https://blog.coregames.com/announcing-core-x-mgl-anime-jam-winners-ab6d134781a6">Honorable Mention</a></p>
+            <div class="scroll-panel">
+                <img src="jam/anime_jam.PNG" alt="anime_jam">
+                <img src="jam/sa_1.PNG" alt="sa_1">
+                <img src="jam/sa_2.PNG" alt="sa_2">
+                <img src="jam/sa_3.PNG" alt="sa_3">
+                <img src="jam/sa_4.PNG" alt="sa_4">
+                <img src="jam/sa_5.PNG" alt="sa_5">
+                <img src="jam/sa_6.PNG" alt="sa_6">
+                <img src="jam/sa_7.PNG" alt="sa_7">
+                <img src="jam/sa_8.PNG" alt="sa_8">
+                <img src="jam/sa_9.PNG" alt="sa_9">
+                <img src="jam/sa_10.PNG" alt="sa_10">
+                <img src="jam/sa_11.PNG" alt="sa_11">
+                <img src="jam/sa_12.PNG" alt="sa_12">
+                <img src="jam/sa_13.PNG" alt="sa_13">
+                <img src="jam/sa_14.PNG" alt="sa_14">
+                <img src="jam/sa_15.PNG" alt="sa_15">
+            </div>
+        </div>
+    </div>
+
+    
+
+    <!-- Pop-up 2 -->
+    <div class="popup" id="popup2">
+        <div class="popup-content">
+            <button class="close-button">X</button>
+            <h3>Core Bootcamp</h3>
+            <p>Worked on a lot of fun projects during the bootcamp.</p>
+            <div class="scroll-panel">
+                <img src="bootcamp/core_logo.png" alt="core_logo">
+                <img src="bootcamp/bc_1.PNG" alt="bc_1">
+                <img src="bootcamp/bc_2.PNG" alt="bc_2">
+                <img src="bootcamp/bc_3.PNG" alt="bc_3">
+                <img src="bootcamp/bc_4.PNG" alt="bc_4">
+                <img src="bootcamp/bc_5.PNG" alt="bc_5">
+                <img src="bootcamp/bc_6.PNG" alt="bc_6">
+            </div>    
+        </div>
+    </div>
+
+    <!-- Pop-up 3 -->
+    <div class="popup" id="popup3">
+        <div class="popup-content">
+            <button class="close-button">X</button>
+            <h3>Popup 3</h3>
+            <p>Raw Modeling</p>
+            <div class="scroll-panel">
+                <img src="models/m_1.PNG" alt="m_1">
+                <img src="models/m_2.PNG" alt="m_2">
+                <img src="models/m_3.PNG" alt="m_3">
+                <img src="models/m_4.PNG" alt="m_4">
+                <img src="models/m_5.PNG" alt="m_5">
+                <img src="models/m_6.PNG" alt="m_6">
+                <img src="models/m_7.PNG" alt="m_7">
+                <img src="models/m_8.PNG" alt="m_8">
+                <img src="models/m_9.PNG" alt="m_9">
+                <img src="models/m_10.PNG" alt="m_10">
+                <img src="models/m_11.PNG" alt="m_11">
+            </div>
+        </div>
+    </div>
+
+    <!-- Pop-up 4 -->
+    <div class="popup" id="popup4">
+        <div class="popup-content">
+            <button class="close-button">X</button>
+            <h3>Sketches</h3>
+            <div class="scroll-panel">
+                <img src="drawings/d_1.png" alt="d_1">
+                <img src="drawings/d_2.png" alt="d_2">
+                <img src="drawings/d_3.png" alt="d_3">
+                <img src="drawings/d_4.PNG" alt="d_4">
+                <img src="drawings/d_5.png" alt="d_5">
+                <img src="drawings/d_6.png" alt="d_6">
+                <img src="drawings/d_7.png" alt="d_7">
+                <img src="drawings/d_8.png" alt="d_8">
+                <img src="drawings/d_9.png" alt="d_9">
+                <img src="drawings/d_10.png" alt="d_10">
+                <img src="drawings/d_11.png" alt="d_11">
+                <img src="drawings/d_12.png" alt="d_12">
+                <img src="drawings/d_13.png" alt="d_13">
+                <img src="drawings/d_14.png" alt="d_14">
+                <img src="drawings/d_15.png" alt="d_15">
+            </div>
+        </div>
+    </div>
+
+    <!-- Pop-up 5 -->
+    <div class="popup" id="popup5">
+        <div class="popup-content">
+            <button class="close-button">X</button>
+            <h3>Video Samples</h3>
+            <div class="scroll-panel">
+                <video controls width="85%" height="85%">
+                    <source src="videos/v_2.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+                <video controls width="85%" height="85%">
+                    <source src="videos/v_1.mp4" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- Pop-up 6 -->
+    <div class="popup" id="popup6">
+        <div class="popup-content">
+            <button class="close-button">X</button>
+            <h3>Say Hello!</h3>
+            <p><a href="mailto:sarahbkr6.9.94@gmail.com">sarahbkr6.9.94@gmail.com</a></p>
+            <p><a href="www.linkedin.com/in/sarah-baker-840a018a">LinkedIn</a></p>
+            <p><a href="https://discord.com/users/rachelletheroach">Discord</a></p>
+            <p><a href="https://twitter.com/RachelletheR">X(Twitter)</a></p>
+            <p><a href="https://www.youtube.com/channel/UCNLtN-P7gOQ1i7CQa1W9LOw">Youtube</a></p>
+            
+        </div>
+    </div>
+
+    
+
+    
+
+    <div class="mouse-popup" id="mousePopup">Press for Sound</div>
+    <div id="game-container"></div>
+    
+</body>
+</html>
